@@ -28,13 +28,13 @@ function initialiseForm(whatToProcess, dataToProcess)
 	case 'UPDATE-CONFIG':
 		if(dataToProcess) {
 			document.getElementById('configurationFileName').value = dataToProcess.filename;
-			document.getElementById('doad_boundary_advert').value = dataToProcess.broadcaster;
+			document.getElementById('selectedBroadcaster').value = dataToProcess.broadcaster;
 			document.getElementById('vizPortNumber').value = dataToProcess.portNumber;
 			document.getElementById('vizIPAddress').value = dataToProcess.ipAddress;
 			document.getElementById('vizScene').value = dataToProcess.vizscene;
 		} else {
 			document.getElementById('configurationFileName').value = '';
-			document.getElementById('doad_boundary_advert').value = '';
+			document.getElementById('selectedBroadcaster').value = '';
 			document.getElementById('vizPortNumber').value = '';
 			document.getElementById('vizIPAddress').value = '';
 			document.getElementById('vizScene').value = '';

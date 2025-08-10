@@ -12,12 +12,6 @@ public class Scene {
 	public Scene() {
 		super();
 	}
-	public Scene(String scene_path, String which_layer) {
-		super();
-		this.scene_path = scene_path;
-		this.which_layer = which_layer;
-	}
-
 	public String getBroadcaster() {
 		return broadcaster;
 	}
@@ -40,6 +34,8 @@ public class Scene {
 	{
 		switch (whichPlatformToUse) {
 		case "EVEREST":
+			System.out.println("sceneLoad: whichLayer = " + whichLayer);
+			System.out.println("sceneLoad: vizScene = " + vizScene);
 			print_writer.println("LAYER" + whichLayer + "*EVEREST*SCENE LOAD " + vizScene + ";");
 			print_writer.println("LAYER" + whichLayer + "*EVEREST*STAGE*DIRECTOR*In STOP;");
 			print_writer.println("LAYER" + whichLayer + "*EVEREST*STAGE*DIRECTOR*In SHOW 0.0;");

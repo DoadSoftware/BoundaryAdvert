@@ -60,11 +60,12 @@ public class IndexController
 			@Override
 		    public boolean accept(File pathname) {
 		        String name = pathname.getName().toLowerCase();
-		        return name.endsWith(".via") && pathname.isFile();
+		        return name.endsWith(".sum") && pathname.isFile();
 		    }
 		}));
 
-		model.addAttribute("configuration_files", new File(BoundaryAdvertUtil.BOUNDARY_ADVERT_DIRECTORY + BoundaryAdvertUtil.CONFIGURATIONS_DIRECTORY).listFiles(new FileFilter() {
+		model.addAttribute("configuration_files", new File(BoundaryAdvertUtil.BOUNDARY_ADVERT_DIRECTORY 
+			+ BoundaryAdvertUtil.CONFIGURATIONS_DIRECTORY).listFiles(new FileFilter() {
 			@Override
 		    public boolean accept(File pathname) {
 		        String name = pathname.getName().toLowerCase();
@@ -73,7 +74,6 @@ public class IndexController
 		}));
 		
 		session_matrices = updateSessionVariables("GET_ALL_MATRICES");
-		System.out.println("initialisePage: session_matrices = " + session_matrices);
 		model.addAttribute("session_Configurations",session_Configurations);
 	
 		return "initialise";
@@ -93,7 +93,7 @@ public class IndexController
 	}
 	
 	@RequestMapping(value = {"/match"}, method = {RequestMethod.POST,RequestMethod.GET})
-	public String ArmWrestlingMatchPage(ModelMap model,
+	public String boundaryAdvertMatchPage(ModelMap model,
 		@RequestParam(value = "configurationFileName", required = false, defaultValue = "") String configurationFileName,
 		@RequestParam(value = "selectedBroadcaster", required = false, defaultValue = "") String selectedBroadcaster,
 		@RequestParam(value = "vizIPAddress", required = false, defaultValue = "") String vizIPAddresss,
@@ -128,8 +128,13 @@ public class IndexController
 				session_Configurations.setIpAddress(vizIPAddresss);
 				session_Configurations.setPortNumber(vizPortNumber);
 				session_Configurations.setVizscene(vizScene);
-				this_scene.add(new Scene(vizScene,"1"));
-				this_scene.get(0).sceneLoad("EVEREST", print_writer, vizScene, 1);
+				this_scene.add(new Scene());
+				switch (selectedBroadcaster.toUpperCase()) {
+				case BoundaryAdvertUtil.DOAD_BOUNDARY_ADVERT:
+					this_scene.get(0).sceneLoad("EVEREST", print_writer, BoundaryAdvertUtil.BOUNDARY_ADVERT_DIRECTORY + 
+						BoundaryAdvertUtil.SCENES_DIRECTORY + vizScene, 1);
+					break;
+				}
 			}
 
 			JAXBContext.newInstance(Configurations.class).createMarshaller().marshal(session_Configurations, 
@@ -157,17 +162,22 @@ public class IndexController
 			
 		case "PROCESS_MATRIX":
 			
-			List<Matrix> thisMatrices = session_matrices.stream().filter(
-				m -> m.getDescription().equalsIgnoreCase(valueToProcess)).collect(Collectors.toList());
+			switch (session_Configurations.getBroadcaster().toUpperCase()) {
+			case BoundaryAdvertUtil.DOAD_BOUNDARY_ADVERT:
+				List<Matrix> thisMatrices = session_matrices.stream().filter(
+					m -> m.getDescription().equalsIgnoreCase(valueToProcess)).collect(Collectors.toList());
 
-			System.out.println("PROCESS_MATRIX: thisMatrices = " + thisMatrices);
-			
-			String everestCode = BoundaryAdvertFunctions.convertDataToDesigCode(
-				session_Configurations.getBroadcaster(), new ObjectMapper().writeValueAsString(thisMatrices));
-			
-			System.out.println("everestCode = " + everestCode);
-			
-			return JSONArray.fromObject(thisMatrices).toString();
+				System.out.println("PROCESS_MATRIX: thisMatrices = " + thisMatrices);
+					
+				String everestCode = BoundaryAdvertFunctions.convertDataToDesigCode(
+					session_Configurations.getBroadcaster(), new ObjectMapper().writeValueAsString(thisMatrices));
+					
+				System.out.println("everestCode = " + everestCode);
+				print_writer.print("LAYER1*EVEREST*TREEVIEW*GRP*FUNCTION_SET_PROP*SCENE_BUILDER stdstrData=" + everestCode + ";");
+				print_writer.print("LAYER1*EVEREST*TREEVIEW*GRP*FUNCTION_SET_PROP*SCENE_BUILDER ParamBuildScene=1;");
+				
+				return JSONArray.fromObject(thisMatrices).toString();
+			}
 			
 		case "GET-CONFIG-DATA":
 			

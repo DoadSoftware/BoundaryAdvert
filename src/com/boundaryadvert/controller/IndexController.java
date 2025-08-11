@@ -173,8 +173,8 @@ public class IndexController
 					session_Configurations.getBroadcaster(), new ObjectMapper().writeValueAsString(thisMatrices));
 					
 				System.out.println("everestCode = " + everestCode);
-				print_writer.print("LAYER1*EVEREST*TREEVIEW*GRP*FUNCTION_SET_PROP*SCENE_BUILDER stdstrData=" + everestCode + ";");
-				print_writer.print("LAYER1*EVEREST*TREEVIEW*GRP*FUNCTION_SET_PROP*SCENE_BUILDER ParamBuildScene=1;");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*GRP*FUNCTION_SET_PROP*SCENE_BUILDER stdstrData=" + everestCode + ";");
+				print_writer.println("LAYER1*EVEREST*TREEVIEW*GRP*FUNCTION_SET_PROP*SCENE_BUILDER ParamBuildScene=1;");
 				
 				return JSONArray.fromObject(thisMatrices).toString();
 			}
